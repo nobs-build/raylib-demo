@@ -1,0 +1,30 @@
+name raylib-demo-build
+
+tools
+{
+  ffmpeg_asset
+  {
+    tool_type="pwsh"
+    !asset_resource
+    pwsh
+    asset_input
+  }
+}
+
+units
+{
+demo
+{
+  "nobs.txt"
+}
+}
+
+profiles
+{
+  default
+  {
+    raylib
+    arch="x86_64"
+    toolchain_version="15.2.0"
+  }
+}

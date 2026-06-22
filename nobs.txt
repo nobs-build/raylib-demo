@@ -1,0 +1,44 @@
+unit demo
+
+build: +bckg_res +music_res logo_res
+{
+  OUTPUT_NAME="demo.exe"
+  C_FILES = P"(demo.c)"
+  C_FLAGS = [ "-Os", "-ffunction-sections", "-fdata-sections" ]
+  LINK_FLAGS = [ "--gc-sections", "--strip-all" ]
+  OBJS += logo_res.OBJS
+  LIB = [ "-lraylib", "-lgdi32", "-lwinmm" ]
+}
+
+bckg_res:
+{
+  ASSET_RESOURCE
+  ASSET_INPUT = P"(bckg.png)"
+  TOOL_INPUTS = [ P"(tools/Optimize-Asset.ps1)", P"(tools/Build-AssetResource.ps1)" ]
+  pwsh = "& ./tools/Build-AssetResource.ps1 image ./bckg.png ./out/generated-assets/bckg.png ./out/generated-assets/bckg.o"
+  ^OBJS = [ P"(out/generated-assets/bckg.o)" ]
+}
+
+music_res:
+{
+  ASSET_RESOURCE
+  ASSET_INPUT = P"(braccada_jam.ogg)"
+  TOOL_INPUTS = [ P"(tools/Optimize-Asset.ps1)", P"(tools/Build-AssetResource.ps1)" ]
+  pwsh = "& ./tools/Build-AssetResource.ps1 audio ./braccada_jam.ogg ./out/generated-assets/braccada_jam.ogg ./out/generated-assets/braccada_jam.o"
+  ^OBJS = [ P"(out/generated-assets/braccada_jam.o)" ]
+}
+
+logo_res:
+{
+  OBJCOPY
+  INPUT = P"(logo.png)"
+  OBJCOPY_FLAGS = [
+    "-I binary",
+    "-O pe-x86-64",
+    "-B i386:x86-64",
+    "--binary-symbol-prefix logo"
+  ]
+  OUTPUT_DIR = P"(out/generated-assets)"
+  OUTPUT_NAME = "logo.o"
+  ^OBJS = [ P"(out/generated-assets/logo.o)" ]
+}
