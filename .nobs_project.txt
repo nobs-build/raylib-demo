@@ -2,11 +2,21 @@ name raylib-demo-build
 
 tools
 {
-  ffmpeg_asset
+  ffmpeg_asset_win
   {
     tool_type="pwsh"
     !asset_resource
-    pwsh
+    os_family = "windows"
+    pwsh = "& ./tools/Build-AssetResource.ps1 ${ASSET_INPUT} ${OBJS}"
+    asset_input
+  }
+
+  ffmpeg_asset_unix
+  {
+    tool_type="command"
+    !asset_resource
+    os_family = "unix"
+    cmdline = "bash ./tools/Build-AssetResource.sh ${ASSET_INPUT} ${OBJS}"
     asset_input
   }
 }
@@ -16,15 +26,43 @@ units
 demo
 {
   "nobs.txt"
-}
+  }
 }
 
 profiles
 {
-  default
+
+  windows_release
   {
-    raylib
+    raylib // helps selecting raylib mingw
     arch="x86_64"
-    toolchain_version="15.2.0"
+    OUTPUT_SUFFIX=".exe"
+    ASSET_SCRIPT_EXT="ps1"
+    OBJCOPY_FORMAT="pe-x86-64"
+  }
+
+  windows_debug
+  {
+    raylib // helps selecting raylib mingw
+    arch="x86_64"
+    OUTPUT_SUFFIX=".exe"
+    ASSET_SCRIPT_EXT="ps1"
+    OBJCOPY_FORMAT="pe-x86-64"
+  }
+
+  unix_release
+  {
+    arch="x86_64"
+    OUTPUT_SUFFIX=""
+    ASSET_SCRIPT_EXT="sh"
+    OBJCOPY_FORMAT="elf64-x86-64"
+  }
+
+  unix_debug
+  {
+    arch="x86_64"
+    OUTPUT_SUFFIX=""
+    ASSET_SCRIPT_EXT="sh"
+    OBJCOPY_FORMAT="elf64-x86-64"
   }
 }

@@ -2,20 +2,28 @@ unit demo
 
 build: +bckg_res +music_res logo_res
 {
-  OUTPUT_NAME="demo.exe"
+  OUTPUT_NAME="demo${OUTPUT_SUFFIX}"
   C_FILES = P"(demo.c)"
   C_FLAGS = [ "-Os", "-ffunction-sections", "-fdata-sections" ]
   LINK_FLAGS = [ "--gc-sections", "--strip-all" ]
   OBJS += logo_res.OBJS
-  LIB = [ "-lraylib", "-lgdi32", "-lwinmm" ]
+  LIB = [ "-lraylib" ]
+  if os_family = "windows"
+  {
+    LIB += [ "-lgdi32", "-lwinmm" ]
+  }
+  if os_family = "unix"
+  {
+    LIB += [ "-lGL", "-lm", "-lpthread", "-ldl", "-lrt", "-lX11" ]
+  }
 }
 
 bckg_res:
 {
   ASSET_RESOURCE
   ASSET_INPUT = P"(bckg.png)"
-  TOOL_INPUTS = [ P"(tools/Optimize-Asset.ps1)", P"(tools/Build-AssetResource.ps1)" ]
-  pwsh = "& ./tools/Build-AssetResource.ps1 image ./bckg.png ./out/generated-assets/bckg.png ./out/generated-assets/bckg.o"
+  // This variable is for cache freshness only. Rebuild the generated object when the asset helper scripts change.
+  CACHE_FRESHNESS = [ P"(tools/Optimize-Asset.${ASSET_SCRIPT_EXT})", P"(tools/Build-AssetResource.${ASSET_SCRIPT_EXT})" ]
   ^OBJS = [ P"(out/generated-assets/bckg.o)" ]
 }
 
@@ -23,8 +31,8 @@ music_res:
 {
   ASSET_RESOURCE
   ASSET_INPUT = P"(braccada_jam.ogg)"
-  TOOL_INPUTS = [ P"(tools/Optimize-Asset.ps1)", P"(tools/Build-AssetResource.ps1)" ]
-  pwsh = "& ./tools/Build-AssetResource.ps1 audio ./braccada_jam.ogg ./out/generated-assets/braccada_jam.ogg ./out/generated-assets/braccada_jam.o"
+  // This variable is for cache freshness only. Rebuild the generated object when the asset helper scripts change.
+  CACHE_FRESHNESS = [ P"(tools/Optimize-Asset.${ASSET_SCRIPT_EXT})", P"(tools/Build-AssetResource.${ASSET_SCRIPT_EXT})" ]
   ^OBJS = [ P"(out/generated-assets/braccada_jam.o)" ]
 }
 
@@ -34,9 +42,11 @@ logo_res:
   INPUT = P"(logo.png)"
   OBJCOPY_FLAGS = [
     "-I binary",
-    "-O pe-x86-64",
-    "-B i386:x86-64",
-    "--binary-symbol-prefix logo"
+    // Some objcopy builds do not support --binary-symbol-prefix logo.
+    // "--binary-symbol-prefix logo",
+    "--rename-section .data=logo,alloc,load,readonly,data,contents",
+    "-O ${OBJCOPY_FORMAT}",
+    "-B i386:x86-64"
   ]
   OUTPUT_DIR = P"(out/generated-assets)"
   OUTPUT_NAME = "logo.o"

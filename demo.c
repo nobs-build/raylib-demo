@@ -9,8 +9,8 @@ extern const unsigned char _binary_bckg_png_start[];
 extern const unsigned char _binary_bckg_png_end[];
 extern const unsigned char _binary_braccada_jam_ogg_start[];
 extern const unsigned char _binary_braccada_jam_ogg_end[];
-extern const unsigned char logo_start[];
-extern const unsigned char logo_end[];
+extern const unsigned char __start_logo[];
+extern const unsigned char __stop_logo[];
 
 static const char *SCROLL_TEXT =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod "
@@ -44,8 +44,8 @@ int main(void)
     UnloadImage(bgImg);
     SetTextureFilter(bg, TEXTURE_FILTER_BILINEAR);
 
-    int logoSize = (int)(logo_end - logo_start);
-    Image logoImg = LoadImageFromMemory(".png", logo_start, logoSize);
+    int logoSize = (int)(__stop_logo - __start_logo);
+    Image logoImg = LoadImageFromMemory(".png", __start_logo, logoSize);
     Texture2D logo = LoadTextureFromImage(logoImg);
     UnloadImage(logoImg);
     SetTextureFilter(logo, TEXTURE_FILTER_BILINEAR);

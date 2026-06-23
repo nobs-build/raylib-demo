@@ -1,28 +1,29 @@
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet('image', 'audio')]
-    [string]$Mode,
-
-    [Parameter(Mandatory = $true, Position = 1)]
     [string]$InputPath,
 
-    [Parameter(Mandatory = $true, Position = 2)]
-    [string]$GeneratedPath,
-
-    [Parameter(Mandatory = $true, Position = 3)]
+    [Parameter(Mandatory = $true, Position = 1)]
     [string]$ObjectPath
 )
 
 $ErrorActionPreference = 'Stop'
 
+$input = (Resolve-Path -LiteralPath $InputPath).Path
+$object = [System.IO.Path]::GetFullPath($ObjectPath)
+$generated = Join-Path (Split-Path -Parent $object) (Split-Path -Leaf $input)
+
+switch ([System.IO.Path]::GetExtension($input).ToLowerInvariant()) {
+    '.png' { $mode = 'image' }
+    '.ogg' { $mode = 'audio' }
+    default { throw "Unsupported asset extension: $([System.IO.Path]::GetExtension($input))" }
+}
+
 & (Join-Path $PSScriptRoot 'Optimize-Asset.ps1') `
-    -Mode $Mode `
-    -InputPath $InputPath `
-    -OutputPath $GeneratedPath
+    -Mode $mode `
+    -InputPath $input `
+    -OutputPath $generated
 
 $objcopy = 'C:\raylib\w64devkit\bin\objcopy.exe'
-$generated = [System.IO.Path]::GetFullPath($GeneratedPath)
-$object = [System.IO.Path]::GetFullPath($ObjectPath)
 
 Push-Location (Split-Path -Parent $generated)
 try {
