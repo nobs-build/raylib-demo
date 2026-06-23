@@ -1,5 +1,31 @@
 unit demo
 
+// -----------------------------------------------------------------------------
+// Default build: what you get by running `nobs <profile>`.
+// Uses checked-in prebuilt assets, so it does not require FFmpeg or asset scripts.
+// -----------------------------------------------------------------------------
+minimal:
+{
+  OUTPUT_NAME="demo${OUTPUT_SUFFIX}"
+  C_FILES = P"(demo.c)"
+  C_FLAGS = [ "-Os", "-ffunction-sections", "-fdata-sections" ]
+  LINK_FLAGS = [ "--gc-sections", "--strip-all" ]
+  OBJS = P"(prebuild/${TARGET_PLATFORM}/*.o)"
+  LIB = [ "-lraylib" ]
+  if os_family = "windows"
+  {
+    LIB += [ "-lgdi32", "-lwinmm" ]
+  }
+  if os_family = "unix"
+  {
+    LIB += [ "-lGL", "-lm", "-lpthread", "-ldl", "-lrt", "-lX11" ]
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Full asset build: rebuilds processed assets from source files.
+// Requires FFmpeg and the platform asset helper script.
+// -----------------------------------------------------------------------------
 build: +bckg_res +music_res logo_res
 {
   OUTPUT_NAME="demo${OUTPUT_SUFFIX}"

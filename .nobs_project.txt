@@ -36,6 +36,7 @@ profiles
   {
     raylib // helps selecting raylib mingw
     arch="x86_64"
+    TARGET_PLATFORM="windows"
     OUTPUT_SUFFIX=".exe"
     ASSET_SCRIPT_EXT="ps1"
     OBJCOPY_FORMAT="pe-x86-64"
@@ -45,6 +46,7 @@ profiles
   {
     raylib // helps selecting raylib mingw
     arch="x86_64"
+    TARGET_PLATFORM="windows"
     OUTPUT_SUFFIX=".exe"
     ASSET_SCRIPT_EXT="ps1"
     OBJCOPY_FORMAT="pe-x86-64"
@@ -53,6 +55,7 @@ profiles
   unix_release
   {
     arch="x86_64"
+    TARGET_PLATFORM="unix"
     OUTPUT_SUFFIX=""
     ASSET_SCRIPT_EXT="sh"
     OBJCOPY_FORMAT="elf64-x86-64"
@@ -61,6 +64,7 @@ profiles
   unix_debug
   {
     arch="x86_64"
+    TARGET_PLATFORM="unix"
     OUTPUT_SUFFIX=""
     ASSET_SCRIPT_EXT="sh"
     OBJCOPY_FORMAT="elf64-x86-64"
