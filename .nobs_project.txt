@@ -1,5 +1,7 @@
 name raylib-demo-build
 
+/* import */
+
 tools
 {
   ffmpeg_asset_win

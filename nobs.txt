@@ -26,7 +26,7 @@ minimal:
 // Full asset build: rebuilds processed assets from source files.
 // Requires FFmpeg and the platform asset helper script.
 // -----------------------------------------------------------------------------
-build: +bckg_res +music_res logo_res
+full: +bckg_res +music_res logo_res
 {
   OUTPUT_NAME="demo${OUTPUT_SUFFIX}"
   C_FILES = P"(demo.c)"
