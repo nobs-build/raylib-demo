@@ -27,8 +27,9 @@ units
 {
 demo
 {
-  "nobs.txt"
-  }
+  "nobs.minimal.txt"
+  "nobs.full.txt"
+}
 }
 
 profiles

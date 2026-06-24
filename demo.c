@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 // The build creates optimized media copies in out/generated-assets and links
-// them directly into the executable with objcopy (see nobs.txt).
+// them directly into the executable with objcopy (see nobs.full.txt).
 extern const unsigned char _binary_bckg_png_start[];
 extern const unsigned char _binary_bckg_png_end[];
 extern const unsigned char _binary_braccada_jam_ogg_start[];
